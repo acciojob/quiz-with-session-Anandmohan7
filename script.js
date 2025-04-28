@@ -1,4 +1,3 @@
-// Quiz data (question, choices, and correct answer)
 const questions = [
   {
     question: "What is the capital of France?",
@@ -26,18 +25,14 @@ const questions = [
     answer: "Vatican City",
   },
 ];
-
-// Get DOM elements
 const questionsElement = document.getElementById("questions");
 const submitButton = document.getElementById("submit");
 const scoreElement = document.getElementById("score");
 
-// Load saved answers from sessionStorage
 let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || [];
 
-// Function to render the questions
 function renderQuestions() {
-  questionsElement.innerHTML = ""; // Clear old content if re-rendered
+  questionsElement.innerHTML = "";
 
   questions.forEach((q, i) => {
     const questionDiv = document.createElement("div");
@@ -52,12 +47,12 @@ function renderQuestions() {
       choiceInput.name = `question-${i}`;
       choiceInput.value = choice;
 
-      // Set checked if previously selected from sessionStorage
+      // Set the radio button to checked if it matches a saved answer
       if (userAnswers[i] === choice) {
         choiceInput.checked = true;
       }
 
-      // Save progress on change
+      // Update userAnswers when the choice is clicked
       choiceInput.addEventListener("change", () => {
         userAnswers[i] = choiceInput.value;
         sessionStorage.setItem("progress", JSON.stringify(userAnswers));
@@ -75,8 +70,7 @@ function renderQuestions() {
   });
 }
 
-// Function to calculate and display the score
-function calculateScore() {
+submitButton.addEventListener("click", () => {
   let score = 0;
   questions.forEach((q, i) => {
     if (userAnswers[i] === q.answer) {
@@ -84,23 +78,13 @@ function calculateScore() {
     }
   });
 
-  // Display the score
   scoreElement.innerText = `Your score is ${score} out of 5.`;
 
-  // Save final score to localStorage
+  // Save score to localStorage
   localStorage.setItem("score", score.toString());
-}
-
-// Attach submit event
-submitButton.addEventListener("click", () => {
-  calculateScore();
 });
 
-// Call render initially
+// Call render on page load
 renderQuestions();
 
-// On page load, if user has submitted before, show last score
-const savedScore = localStorage.getItem("score");
-if (savedScore !== null && savedScore !== undefined) {
-  scoreElement.innerText = `Your score is ${savedScore} out of 5.`;
-}
+
