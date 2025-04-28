@@ -1,4 +1,31 @@
-//your JS code here.
+// Quiz data (question, choices, and correct answer)
+const questions = [
+  {
+    question: "What is the capital of France?",
+    choices: ["Paris", "London", "Berlin", "Rome"],
+    answer: "Paris",
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+    answer: "Mars",
+  },
+  {
+    question: "What is the largest ocean on Earth?",
+    choices: ["Atlantic", "Indian", "Arctic", "Pacific"],
+    answer: "Pacific",
+  },
+  {
+    question: "Who wrote 'Hamlet'?",
+    choices: ["Shakespeare", "Dickens", "Hemingway", "Fitzgerald"],
+    answer: "Shakespeare",
+  },
+  {
+    question: "What is the smallest country in the world?",
+    choices: ["Vatican City", "Monaco", "San Marino", "Liechtenstein"],
+    answer: "Vatican City",
+  },
+];
 
 // Get DOM elements
 const questionsElement = document.getElementById("questions");
@@ -28,7 +55,6 @@ function renderQuestions() {
       // ✅ Set checked if previously selected
       if (userAnswers[i] === choice) {
         choiceInput.checked = true;
-        choiceInput.setAttribute("checked", "true"); // Important for Cypress
       }
 
       // Save progress on change
@@ -75,6 +101,6 @@ renderQuestions();
 
 // On page load, if user has submitted before, show last score
 const savedScore = localStorage.getItem("score");
-if (savedScore !== null && savedScore !== undefined) {
+if (savedScore !== null) {
   scoreElement.innerText = `Your score is ${savedScore} out of 5.`;
 }
