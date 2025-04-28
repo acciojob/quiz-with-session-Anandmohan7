@@ -52,7 +52,7 @@ function renderQuestions() {
       choiceInput.name = `question-${i}`;
       choiceInput.value = choice;
 
-      // ✅ Set checked if previously selected
+      // ✅ Set checked if previously selected from sessionStorage
       if (userAnswers[i] === choice) {
         choiceInput.checked = true;
       }
@@ -74,6 +74,7 @@ function renderQuestions() {
     questionsElement.appendChild(questionDiv);
   });
 }
+
 
 // Function to calculate and display the score
 function calculateScore() {
