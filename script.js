@@ -1,22 +1,16 @@
-// your questions
-const questions = [
-  { question: "What is the capital of France?", choices: ["Paris", "London", "Berlin", "Madrid"], answer: "Paris" },
-  { question: "What is the highest mountain in the world?", choices: ["Everest", "Kilimanjaro", "Denali", "Matterhorn"], answer: "Everest" },
-  { question: "What is the largest country by area?", choices: ["Russia", "China", "Canada", "United States"], answer: "Russia" },
-  { question: "Which is the largest planet in our solar system?", choices: ["Earth", "Jupiter", "Mars"], answer: "Jupiter" },
-  { question: "What is the capital of Canada?", choices: ["Toronto", "Montreal", "Vancouver", "Ottawa"], answer: "Ottawa" },
-];
+//your JS code here.
 
-// get elements
+// Get DOM elements
 const questionsElement = document.getElementById("questions");
 const submitButton = document.getElementById("submit");
 const scoreElement = document.getElementById("score");
 
-// load previous answers
-let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
+// Load saved answers from sessionStorage
+let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || [];
 
+// Function to render the questions
 function renderQuestions() {
-  questionsElement.innerHTML = ""; // Clear old content
+  questionsElement.innerHTML = ""; // Clear old content if re-rendered
 
   questions.forEach((q, i) => {
     const questionDiv = document.createElement("div");
@@ -31,11 +25,13 @@ function renderQuestions() {
       choiceInput.name = `question-${i}`;
       choiceInput.value = choice;
 
-      // 🛠 Set checked if previously selected
+      // ✅ Set checked if previously selected
       if (userAnswers[i] === choice) {
         choiceInput.checked = true;
+        choiceInput.setAttribute("checked", "true"); // Important for Cypress
       }
 
+      // Save progress on change
       choiceInput.addEventListener("change", () => {
         userAnswers[i] = choiceInput.value;
         sessionStorage.setItem("progress", JSON.stringify(userAnswers));
@@ -53,8 +49,8 @@ function renderQuestions() {
   });
 }
 
-// submit button click
-submitButton.addEventListener("click", () => {
+// Function to calculate and display the score
+function calculateScore() {
   let score = 0;
   questions.forEach((q, i) => {
     if (userAnswers[i] === q.answer) {
@@ -62,15 +58,23 @@ submitButton.addEventListener("click", () => {
     }
   });
 
+  // Display the score
   scoreElement.innerText = `Your score is ${score} out of 5.`;
-  localStorage.setItem("score", score);
-});
 
-// on load
-const lastScore = localStorage.getItem("score");
-if (lastScore !== null) {
-  scoreElement.innerText = `Your score is ${lastScore} out of 5.`;
+  // Save final score to localStorage
+  localStorage.setItem("score", score.toString());
 }
 
-// render everything
+// Attach submit event
+submitButton.addEventListener("click", () => {
+  calculateScore();
+});
+
+// Call render initially
 renderQuestions();
+
+// On page load, if user has submitted before, show last score
+const savedScore = localStorage.getItem("score");
+if (savedScore !== null && savedScore !== undefined) {
+  scoreElement.innerText = `Your score is ${savedScore} out of 5.`;
+}
