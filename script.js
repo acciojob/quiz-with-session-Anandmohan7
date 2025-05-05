@@ -1,13 +1,13 @@
 const questions = [
   {
-    question: "What is the highest mountain in the world?",
-    choices: ["K2", "Kangchenjunga", "Everest", "Makalu"],
-    answer: "Everest"
-  },
-  {
     question: "What is the capital of France?",
     choices: ["Berlin", "Madrid", "Paris", "Lisbon"],
     answer: "Paris"
+  },
+  {
+    question: "What is the highest mountain in the world?",
+    choices: ["K2", "Kangchenjunga", "Everest", "Makalu"],
+    answer: "Everest"
   },
   {
     question: "What is the boiling point of water?",
@@ -30,6 +30,7 @@ const questionsContainer = document.getElementById("questions");
 const scoreDisplay = document.getElementById("score");
 const submitButton = document.getElementById("submit");
 
+// Render the quiz
 function renderQuestions() {
   const progress = JSON.parse(sessionStorage.getItem("progress")) || {};
   questionsContainer.innerHTML = "";
@@ -44,16 +45,19 @@ function renderQuestions() {
 
       const label = document.createElement("label");
       label.setAttribute("for", inputId);
-      label.innerHTML = `
-        <input
-          type="radio"
-          name="q${index}"
-          id="${inputId}"
-          value="${choice}"
-          ${isChecked ? "checked" : ""}
-        />
-        ${choice}
-      `;
+
+      const radioInput = document.createElement("input");
+      radioInput.type = "radio";
+      radioInput.name = `q${index}`;
+      radioInput.id = inputId;
+      radioInput.value = choice;
+      if (isChecked) {
+        radioInput.setAttribute("checked", "true"); // Required for Cypress check
+      }
+
+      label.appendChild(radioInput);
+      label.appendChild(document.createTextNode(choice));
+
       questionDiv.appendChild(label);
       questionDiv.appendChild(document.createElement("br"));
     });
@@ -64,6 +68,7 @@ function renderQuestions() {
   attachListeners();
 }
 
+// Attach event listeners for tracking answers
 function attachListeners() {
   const radios = document.querySelectorAll("input[type='radio']");
   radios.forEach(radio => {
@@ -76,6 +81,7 @@ function attachListeners() {
   });
 }
 
+// Submit quiz logic
 function submitQuiz() {
   const progress = JSON.parse(sessionStorage.getItem("progress")) || {};
   let score = 0;
@@ -91,13 +97,19 @@ function submitQuiz() {
   localStorage.setItem("score", score);
 }
 
+// Restore score if it exists in localStorage
 function loadStoredScore() {
   const savedScore = localStorage.getItem("score");
   if (savedScore !== null) {
     scoreDisplay.textContent = `Your score is ${savedScore} out of 5.`;
+  } else {
+    scoreDisplay.textContent = "";
   }
 }
 
-// Initialize
+// Initial setup
 renderQuestions();
 loadStoredScore();
+
+// Event listener for submit button
+submitButton.addEventListener("click", submitQuiz);
